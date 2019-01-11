@@ -1,55 +1,37 @@
 #pragma once
 
 #include <type_traits>
+#include <utility>
 
 namespace Cpposix
 {
-/*
-	HELPER FUNCTIONS
-*/
 	
 template <typename T>
-inline constexpr bool isWrittable()
+inline constexpr bool isWritable()
 {
-	return (std::has_unique_object_representations<T>::value) && (!std::is_pointer<T>::value);
+	return
+		std::has_unique_object_representations<T>::value &&
+		!std::is_pointer<T>::value
+	;
 }
 
 template <typename T>
-inline constexpr bool isWrittable(const T& t) { return isWrittable<T>(); }
-
-
-template <typename T>
-inline constexpr bool isSmartPointer();
-
-template <typename T>
-inline constexpr bool isWrittabeSmartPointer();
-
-
-/*
-CONCEPTS
-
-Writtable => unique_representatoin && not a pointer
-	example:
-		template<typename Writtable>
-		void test(Writtable writtable);
-
-SmartPointer
-WrittableSmartPointer
-
-ContiguousContainer pas sur que ça soit utile
-WrittableContainer pas sur que ça soit utile
-
-
-ForkCallback
-
-*/
+inline constexpr bool isWritableContainer()
+{
+	return
+		isWritable<typename T::value_type>() &&
+		std::is_unsigned<decltype(std::declval<T>().size())>::value &&
+		(
+			std::is_same<typename T::value_type*, decltype(std::declval<T>().data())>::value ||
+			std::is_same<const typename T::value_type*, decltype(std::declval<T>().data())>::value
+		)
+	;
+}
 
 template <typename T>
-using IsWrittable = std::enable_if_t<isWrittable<T>()>;
+using IsWritable = typename std::enable_if_t<isWritable<T>()>;
 
-
-// used for better error message with static_assert
 template <typename T>
-using IsUnwrittable = std::enable_if_t<!isWrittable<T>()/*ajouter ici les autres négations de concepts plus tard*/>;
+using IsWritableContainer = typename std::enable_if_t<isWritableContainer<T>()>;
 
 }
