@@ -1,18 +1,54 @@
 #pragma once
 
 #include <variant>
+#include <cerrno>
+#include <cstring>
+#include <string>
+#include <string_view>
+#include <mutex>
+#include <exception>
 
 namespace Cpposix
 {
 
+class CpposixException
+{
+	public:
+		explicit CpposixException(std::string_view msg): _msg(msg) {}
+
+		const char* what() const { return _msg.c_str(); }
+
+	private:
+		std::string _msg;
+};
+
+std::string_view strerror(int errnum)
+{
+	static std::mutex mutex;
+	std::lock_guard lock(mutex);
+	return std::string_view(std::strerror(errnum));
+}
+
 class Error
 {
 	public:
-		Error() = default;
+		Error(): _errno(errno) {}
+		Error(int errnum): _errno(errnum) {}
 
-		int get_errno_value() const { return _errno; }
+		int getErrnoValue() const { return _errno; }
+
+		std::string getErrorMessage() const
+		{
+			return std::string(strerror(_errno));
+		};
+
+		std::string_view getErrorMessageView() const
+		{
+			return strerror(_errno);
+		}
+
 	private:
-		int _errno = 0;
+		int _errno;
 };
 
 template <typename T>
