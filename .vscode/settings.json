@@ -38,6 +38,18 @@
 		"string": "cpp",
 		"tuple": "cpp",
 		"list": "cpp",
-		"vector": "cpp"
+		"vector": "cpp",
+		"algorithm": "cpp",
+		"array": "cpp",
+		"chrono": "cpp",
+		"functional": "cpp",
+		"iterator": "cpp",
+		"mutex": "cpp",
+		"ratio": "cpp",
+		"string_view": "cpp",
+		"xthread": "cpp",
+		"thread": "cpp",
+		"unordered_map": "cpp",
+		"xhash": "cpp"
 	}
 }

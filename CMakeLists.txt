@@ -14,3 +14,9 @@ add_executable(test_expected ${SRCS_EXPECTED})
 
 set(SRCS_CONCEPT test/test_concept.cpp)
 add_executable(test_concept ${SRCS_CONCEPT})
+
+set(SRCS_BUFFER test/test_buffer.cpp)
+add_executable(test_buffer ${SRCS_BUFFER})
+
+set(SRCS_FD test/test_fd.cpp)
+add_executable(test_fd ${SRCS_FD})
