@@ -6,7 +6,7 @@ CMAKE_FORCE_CXX_COMPILER(g++ GNU)
 
 project(CPPosix)
 include_directories(CPPosix PRIVATE ./src)
-add_definitions(-std=c++17)
+add_definitions(-std=c++17 -Wextra -Wall -Wsign-conversion -Wfloat-equal -pedantic -Wredundant-decls -Wshadow) 
 
 
 set(SRCS_EXPECTED test/test_expected.cpp)
