@@ -5,7 +5,13 @@
 
 namespace Cpposix
 {
-	
+
+namespace Constexpr
+{
+	constexpr bool True = std::integral_constant<bool, true>();
+	constexpr bool False = std::integral_constant<bool, false>();
+}
+
 template <typename T>
 inline constexpr bool isWritable()
 {
@@ -29,9 +35,26 @@ inline constexpr bool isWritableContainer()
 }
 
 template <typename T>
+inline constexpr bool isReadableContainer()
+{
+	return
+		isWritable<typename T::value_type>() &&
+		std::is_unsigned<decltype(std::declval<T>().size())>::value &&
+		std::is_same<typename T::value_type*, decltype(std::declval<T>().data())>::value
+	;
+}
+
+template <typename T>
 using IsWritable = typename std::enable_if_t<isWritable<T>()>;
 
 template <typename T>
+using IsReadable = IsWritable<T>;
+
+template <typename T>
 using IsWritableContainer = typename std::enable_if_t<isWritableContainer<T>()>;
+
+template <typename T>
+using IsReadableContainer = typename std::enable_if_t<isReadableContainer<T>()>;
+
 
 }
