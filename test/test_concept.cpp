@@ -43,13 +43,13 @@ struct NoneCompile
 };
 
 template <typename Writable, typename = IsWritable<Writable>>
-OverloadUsed my_function(Writable writable)
+OverloadUsed my_function(Writable)
 {
 	return OverloadUsed::WRITABLE;
 }
 
 template <typename WritableContainer, typename = IsWritableContainer<WritableContainer>>
-OverloadUsed my_other_function(WritableContainer writableContainer)
+OverloadUsed my_other_function(WritableContainer)
 {
 	return OverloadUsed::WRITABLE_CONTAINER;
 }
