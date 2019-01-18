@@ -35,7 +35,7 @@ void test_write()
 	assert((fd << "Operator <<\n"s));
 }
 
-void test_read()
+void test_readIn()
 {
 	Fd fd(::open("Makefile", O_RDONLY));
 
@@ -50,12 +50,20 @@ void test_read()
 	assert(fd.readIn(v.data(), 5).get_or(0) == 5);
 	assert((fd >> v));
 	assert(!fd.readIn(v, 25));
+}
 
+void test_read()
+{
+	Fd fd(::open("Makefile", O_RDONLY));
 
+	assert(fd);
+	assert(fd.read<uint32_t>());
+	assert(fd.read<std::string>(50));
 }
 
 int main()
 {
 	test_write();
+	test_readIn();
 	test_read();
 }

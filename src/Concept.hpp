@@ -56,8 +56,7 @@ inline constexpr bool isReadableContainer()
 	return
 		isWritable<typename T::value_type>() &&
 		std::is_unsigned<decltype(std::declval<T>().size())>::value &&
-		std::is_same<typename T::value_type*, decltype(std::declval<T>().data())>::value &&
-		std::is_member_function_pointer<decltype(&T::resize)>::value
+		std::is_same<typename T::value_type*, decltype(std::declval<T>().data())>::value
 	;
 }
 
