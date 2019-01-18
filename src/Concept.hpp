@@ -22,6 +22,12 @@ inline constexpr bool isWritable()
 }
 
 template <typename T>
+inline constexpr bool isReadable()
+{
+	return isWritable<T>();
+}
+
+template <typename T>
 inline constexpr bool isWritableContainer()
 {
 	return
@@ -35,7 +41,7 @@ inline constexpr bool isWritableContainer()
 }
 
 template <typename T>
-inline constexpr bool isReadableContainer()
+inline constexpr bool isReadableInContainer()
 {
 	return
 		isWritable<typename T::value_type>() &&
@@ -45,13 +51,27 @@ inline constexpr bool isReadableContainer()
 }
 
 template <typename T>
+inline constexpr bool isReadableContainer()
+{
+	return
+		isWritable<typename T::value_type>() &&
+		std::is_unsigned<decltype(std::declval<T>().size())>::value &&
+		std::is_same<typename T::value_type*, decltype(std::declval<T>().data())>::value &&
+		std::is_member_function_pointer<decltype(&T::resize)>::value
+	;
+}
+
+template <typename T>
 using IsWritable = typename std::enable_if_t<isWritable<T>()>;
 
 template <typename T>
-using IsReadable = IsWritable<T>;
+using IsReadable = typename std::enable_if_t<isReadable<T>()>;
 
 template <typename T>
 using IsWritableContainer = typename std::enable_if_t<isWritableContainer<T>()>;
+
+template <typename T>
+using IsReadableInContainer = typename std::enable_if_t<isReadableInContainer<T>()>;
 
 template <typename T>
 using IsReadableContainer = typename std::enable_if_t<isReadableContainer<T>()>;

@@ -4,6 +4,9 @@
 #include <string>
 #include <vector>
 #include <list>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 #include "Fd.hpp"
 
@@ -22,6 +25,7 @@ void test_write()
 
 	std::string str = "\nContainer";
 	assert(fd.write(str).get_or(0) == str.size());
+	assert(fd.write(str, 50).get_or(0) == 0);
 
 	std::string str2 = "\nContainerblabla";
 	assert(fd.write(str2, str.size()).get_or(0) == str.size());
@@ -31,7 +35,27 @@ void test_write()
 	assert((fd << "Operator <<\n"s));
 }
 
+void test_read()
+{
+	Fd fd(::open("Makefile", O_RDONLY));
+
+	assert(fd);
+
+	int32_t i;
+	assert(fd.readIn(i).get_or(0) == sizeof(int32_t));
+
+	std::vector<uint8_t> v(10);
+	assert(fd.readIn(v).get_or(0) == 10);
+	assert(fd.readIn(v, 5).get_or(0) == 5);
+	assert(fd.readIn(v.data(), 5).get_or(0) == 5);
+	assert((fd >> v));
+	assert(!fd.readIn(v, 25));
+
+
+}
+
 int main()
 {
 	test_write();
+	test_read();
 }
