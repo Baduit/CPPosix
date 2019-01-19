@@ -1,5 +1,8 @@
 #pragma once
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/statvfs.h>
 #include <unistd.h>
 #include <cstddef>
 #include <cstdlib>
@@ -9,6 +12,9 @@
 
 namespace Cpposix
 {
+
+using FileStat = struct stat;
+using FileStatVfs = struct statvfs;
 
 class Fd
 {
@@ -35,6 +41,76 @@ class Fd
 		{
 			if (*this)
 				::close(_fd);
+		}
+
+		Expected<off_t>	lseek(off_t  offset, int whence)
+		{
+			off_t result = ::lseek(_fd, offset, whence);
+			if (result != -1)
+				return result;
+			else
+				return Error();
+			
+		}
+
+		Expected<FileStat>	stat()
+		{
+			FileStat s;
+			off_t result = ::fstat(_fd, &s);
+			if (result != -1)
+				return s;
+			else
+				return Error();
+		}
+
+		Expected<FileStatVfs>	statVfs()
+		{
+			FileStatVfs s;
+			off_t result = ::fstatvfs(_fd, &s);
+			if (result != -1)
+				return s;
+			else
+				return Error();
+		}
+
+		Expected<Void>	chmod(mode_t mode)
+		{
+			if (::fchmod(_fd, mode) != -1)
+				return Void();
+			else
+				return Error();
+		}
+
+		Expected<Void>	chmod(uid_t owner, gid_t group)
+		{
+			if (::fchown(_fd, owner, group) != -1)
+				return Void();
+			else
+				return Error();
+		}
+
+		Expected<Void>	truncate(off_t length)
+		{
+			if (::ftruncate(_fd, length) != -1)
+				return Void();
+			else
+				return Error();
+		}
+
+		Expected<Void>	fSync()
+		{
+			if (::fsync(_fd) != -1)
+				return Void();
+			else
+				return Error();
+		}
+
+		Expected<Void>	fDataSync()
+		{
+			if (::fsync(_fd) != -1)
+				return Void();
+			else
+				return Error();
 		}
 
 		/* Write */
@@ -122,7 +198,7 @@ class Fd
 			}
 		}
 
-		/* Read exact */ // unfinished
+		/* Read exact */
 		template <typename T>
 		Expected<T>	readExact() { return readExactReadable<T>(); }
 
@@ -146,16 +222,11 @@ class Fd
 		template <typename Writable, typename = IsWritable<Writable>>
 		Expected<std::size_t>	writePointer(const Writable* writable_ptr, std::size_t size)
 		{
-			if (*this)
-			{
-				auto nb_byte_writed = ::write(_fd, writable_ptr, size);
-				if (nb_byte_writed != -1)
-					return static_cast<std::size_t>(nb_byte_writed);
-				else
-					return Error();
-			}
+			auto nb_byte_writed = ::write(_fd, writable_ptr, size);
+			if (nb_byte_writed != -1)
+				return static_cast<std::size_t>(nb_byte_writed);
 			else
-				return Error(EBADF);
+				return Error();
 		}
 
 		template <typename Writable, typename = IsWritable<Writable>>
@@ -228,12 +299,15 @@ class Fd
 		Expected<Readable>	readExactReadable(std::size_t size = sizeof(Readable))
 		{
 			Readable readable {};
-			// add the loop and i will have to play with pointers
-			auto result = readInReadable(readable, size);
-			if (result)
-				return readable;
-			else
-				return Expected<Readable>(result.get_error());
+			std::size_t total_readed_size = 0;
+			while (total_readed_size < size)
+			{
+				auto result = readInPointer((&readable) + total_readed_size, size - total_readed_size);
+				if (!result)
+					return Expected<Readable>(result.get_error());
+				total_readed_size += result.get();
+			}
+			return readable;
 
 		}
 
@@ -242,12 +316,15 @@ class Fd
 		{
 			ReadableContainer readableContainer;
 			readableContainer.resize(size);
-			// add the loop and i will have to play with pointers
-			auto result = readableInContainer(readableContainer, size);
-			if (result)
-				return readableContainer;
-			else
-				return Expected<ReadableContainer>(result.get_error());
+			std::size_t total_readed_size = 0;
+			while (total_readed_size < size)
+			{
+				auto result = readInPointer(&readableContainer[total_readed_size], size - total_readed_size);
+				if (!result)
+					return Expected<ReadableContainer>(result.get_error());
+				total_readed_size += result.get();
+			}
+			return readableContainer;
 		}
 
 

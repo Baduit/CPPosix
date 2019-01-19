@@ -61,9 +61,19 @@ void test_read()
 	assert(fd.read<std::string>(50));
 }
 
+void test_readExact()
+{
+	Fd fd(::open("Makefile", O_RDONLY));
+
+	assert(fd);
+	assert(fd.readExact<uint32_t>());
+	assert(fd.readExact<std::string>(50));
+}
+
 int main()
 {
 	test_write();
 	test_readIn();
 	test_read();
+	test_readExact();
 }

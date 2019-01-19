@@ -12,6 +12,8 @@ namespace Constexpr
 	constexpr bool False = std::integral_constant<bool, false>();
 }
 
+struct Void {};
+
 template <typename T>
 inline constexpr bool isWritable()
 {
