@@ -9,6 +9,10 @@
 #include <fcntl.h>
 
 #include "Fd.hpp"
+#include "FileFd.hpp"
+#include "SocketFd.hpp"
+#include "PipeFd.hpp"
+#include "FdFunctions.hpp"
 
 using namespace Cpposix;
 using namespace std::string_literals;

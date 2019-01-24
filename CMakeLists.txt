@@ -16,3 +16,6 @@ add_executable(test_buffer ${SRCS_BUFFER})
 
 set(SRCS_FD test/test_fd.cpp)
 add_executable(test_fd ${SRCS_FD})
+
+set(SRCS_ENV test/test_env.cpp)
+add_executable(test_env ${SRCS_ENV})

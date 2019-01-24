@@ -53,50 +53,6 @@ class Fd
 			
 		}
 
-		Expected<FileStat>	stat()
-		{
-			FileStat s;
-			off_t result = ::fstat(_fd, &s);
-			if (result != -1)
-				return s;
-			else
-				return Error();
-		}
-
-		Expected<FileStatVfs>	statVfs()
-		{
-			FileStatVfs s;
-			off_t result = ::fstatvfs(_fd, &s);
-			if (result != -1)
-				return s;
-			else
-				return Error();
-		}
-
-		Expected<Void>	chmod(mode_t mode)
-		{
-			if (::fchmod(_fd, mode) != -1)
-				return Void();
-			else
-				return Error();
-		}
-
-		Expected<Void>	chmod(uid_t owner, gid_t group)
-		{
-			if (::fchown(_fd, owner, group) != -1)
-				return Void();
-			else
-				return Error();
-		}
-
-		Expected<Void>	truncate(off_t length)
-		{
-			if (::ftruncate(_fd, length) != -1)
-				return Void();
-			else
-				return Error();
-		}
-
 		Expected<Void>	fSync()
 		{
 			if (::fsync(_fd) != -1)
