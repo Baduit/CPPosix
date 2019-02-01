@@ -40,24 +40,21 @@ class FileFd: public Fd
 		explicit FileFd(int fd): Fd(fd) {}
 		FileFd(std::string_view filename, FileFlags flags)
 		{
-			if (filename.back())
+			if (filename[filename.size()])
 				throw CpposixException("The string argument is not null terminated");
 			_fd = ::open(filename.data(), flags.flags);
 		}
 
 		FileFd(std::string_view filename, FileFlags flags, FileMode creation_mode)
 		{
-			if (filename.back())
+			if (filename[filename.size()])
 				throw CpposixException("The string argument is not null terminated");
 			_fd = ::open(filename.data(), flags.flags, creation_mode.mode);
 		}
 
-		FileFd(DirFd dir, std::string_view filename, FileFlags flags); // to do
-		FileFd(DirFd dir, std::string_view filename, FileFlags flags, FileMode creation_mode); // to do
-
 		static Expected<FileFd>	create(std::string_view filename, FileMode creation_mode)
 		{
-			if (filename.back())
+			if (filename[filename.size()])
 				throw CpposixException("The string argument is not null terminated");
 			FileFd fd(::creat(filename.data(), creation_mode.mode));
 			if (fd)
@@ -94,7 +91,7 @@ class FileFd: public Fd
 				return Error();
 		}
 
-		Expected<Void>	chmown(uid_t owner, gid_t group)
+		Expected<Void>	chown(uid_t owner, gid_t group)
 		{
 			if (::fchown(_fd, owner, group) != -1)
 				return Void();
@@ -106,6 +103,24 @@ class FileFd: public Fd
 		{
 			if (::ftruncate(_fd, length) != -1)
 				return Void();
+			else
+				return Error();
+		}
+
+		Expected<off_t>	lseek(off_t  offset, int whence)
+		{
+			off_t result = ::lseek(_fd, offset, whence);
+			if (result != -1)
+				return result;
+			else
+				return Error();
+		}
+
+		Expected<long>	path_conf(int name)
+		{	
+			long result = ::fpathconf(_fd, name);
+			if (result != -1)
+				return result;
 			else
 				return Error();
 		}

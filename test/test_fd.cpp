@@ -41,7 +41,7 @@ void test_write()
 
 void test_readIn()
 {
-	Fd fd(::open("Makefile", O_RDONLY));
+	FileFd fd("Makefile", O_RDONLY);
 
 	assert(fd);
 
@@ -58,7 +58,7 @@ void test_readIn()
 
 void test_read()
 {
-	Fd fd(::open("Makefile", O_RDONLY));
+	FileFd fd("Makefile", O_RDONLY);
 
 	assert(fd);
 	assert(fd.read<uint32_t>());
@@ -67,7 +67,7 @@ void test_read()
 
 void test_readExact()
 {
-	Fd fd(::open("Makefile", O_RDONLY));
+	FileFd fd("Makefile", O_RDONLY);
 
 	assert(fd);
 	assert(fd.readExact<uint32_t>());

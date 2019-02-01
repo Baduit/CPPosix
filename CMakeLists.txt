@@ -19,3 +19,6 @@ add_executable(test_fd ${SRCS_FD})
 
 set(SRCS_ENV test/test_env.cpp)
 add_executable(test_env ${SRCS_ENV})
+
+set(SRCS_FILESYSTEM test/test_filesystem.cpp)
+add_executable(test_filesystem ${SRCS_FILESYSTEM})

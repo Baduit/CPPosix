@@ -6,6 +6,8 @@
 #include <unistd.h>
 #include <cstddef>
 #include <cstdlib>
+#include <sys/ioctl.h>
+#include <fcntl.h>
 
 #include "Concept.hpp"
 #include "Expected.hpp"
@@ -40,16 +42,6 @@ class Fd
 				::close(_fd);
 		}
 
-		Expected<off_t>	lseek(off_t  offset, int whence)
-		{
-			off_t result = ::lseek(_fd, offset, whence);
-			if (result != -1)
-				return result;
-			else
-				return Error();
-			
-		}
-
 		Expected<Void>	fSync()
 		{
 			if (::fsync(_fd) != -1)
@@ -61,6 +53,26 @@ class Fd
 		Expected<Void>	fDataSync()
 		{
 			if (::fsync(_fd) != -1)
+				return Void();
+			else
+				return Error();
+		}
+
+		template <typename ...Args>
+		Expected<int> ioctl(unsigned long request, Args... args)
+		{
+			int result = ::ioctl(_fd, request, args...);
+			if (result != -1)
+				return result;
+			else
+				return Error();
+		}
+
+		template <typename ...Args>
+		Expected<Void> fcntl(int cmd, Args... args)
+		{
+			int result = ::fcntl(_fd, cmd, args...);
+			if (result != -1)
 				return Void();
 			else
 				return Error();
