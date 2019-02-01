@@ -12,7 +12,7 @@ namespace Cpposix
 
 Expected<std::string>	getEnv(std::string_view name)
 {
-	if (!name.back())
+	if (name.back())
 		throw CpposixException("The string argument is not null terminated");
 	const char *cstr = getenv(name.data());
 	if (!cstr)
@@ -22,7 +22,7 @@ Expected<std::string>	getEnv(std::string_view name)
 
 Expected<std::string_view>	getEnvView(std::string_view name)
 {
-	if (!name.back())
+	if (name.back())
 		throw CpposixException("The string argument is not null terminated");
 	const char *cstr = getenv(name.data());
 	if (!cstr)
@@ -32,7 +32,7 @@ Expected<std::string_view>	getEnvView(std::string_view name)
 
 Expected<Void>	setEnv(std::string_view name, std::string_view value, bool overwrite = true)
 {
-	if (!name.back() || !value.back())
+	if (name.back() || value.back())
 		throw CpposixException("The string argument is not null terminated");
 	int overwrite_int = (overwrite) ? 1: 0;
 	if (setenv(name.data(), value.data(), overwrite_int) == -1)
@@ -46,7 +46,7 @@ Expected<Void>	setEnv(std::string_view name, std::string_view value, bool overwr
 
 Expected<Void>	unsetEnv(std::string_view name)
 {
-	if (!name.back())
+	if (name.back())
 		throw CpposixException("The string argument is not null terminated");
 	if (unsetenv(name.data()) == -1)
 		return Error();
@@ -66,6 +66,7 @@ class Env
 		Env()
 		{
 			// some stuff later
+			// man 7 environ
 		}
 
 		//operator [] -> the special struct optional ref asignable

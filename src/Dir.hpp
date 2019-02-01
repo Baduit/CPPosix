@@ -5,7 +5,7 @@
 namespace Cpposix
 {
 
-class Dir
+class DirFd
 {
 
 };

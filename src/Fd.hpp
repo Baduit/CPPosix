@@ -13,9 +13,6 @@
 namespace Cpposix
 {
 
-using FileStat = struct stat;
-using FileStatVfs = struct statvfs;
-
 class Fd
 {
 	public:
