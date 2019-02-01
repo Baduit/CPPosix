@@ -56,6 +56,7 @@ class Expected
 {
 	public:
 		Expected(const T& t): _variant(t) {}
+		Expected(T&& t): _variant(std::move(t)) {}
 		Expected(Error e): _variant(e) {}
 
 

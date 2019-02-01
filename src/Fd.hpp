@@ -21,11 +21,30 @@ class Fd
 		Fd() = default;
 		explicit Fd(int fd): _fd(fd) {}
 
+		Fd(const Fd&) = delete;
+		Fd(Fd&& other)
+		{
+			close();
+			_fd = other._fd;
+			other._fd = -1;
+		}
+
 		virtual ~Fd()
 		{
 			if (_fd != 0 && _fd != 1 && _fd != 2)
 				close();
 		}
+
+		Fd& operator=(const Fd&) = delete;
+		Fd& operator=(Fd&& other)
+		{
+			close();
+			_fd = other._fd;
+			other._fd = -1;
+			return *this;
+		}
+
+		int getFdAsInt() const { return _fd; }
 
 		operator bool () const { return _fd >= 0; }
 

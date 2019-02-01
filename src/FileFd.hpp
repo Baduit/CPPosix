@@ -116,7 +116,7 @@ class FileFd: public Fd
 				return Error();
 		}
 
-		Expected<long>	path_conf(int name)
+		Expected<long>	pathConf(int name)
 		{	
 			long result = ::fpathconf(_fd, name);
 			if (result != -1)
