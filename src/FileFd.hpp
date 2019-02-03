@@ -19,18 +19,7 @@ struct FileMode
 	template <typename ...Args>
 	FileMode(Args... args): mode((... | args)) {}
 
-	mode_t mode;
-};
-
-struct FileFlags
-{
-	FileFlags() = default;
-	FileFlags(int f): flags(f) {}
-
-	template <typename ...Args>
-	FileFlags(Args... args): flags((... | args)) {}
-
-	int flags;
+	mode_t mode = 0;
 };
 
 class FileFd: public Fd
@@ -38,14 +27,14 @@ class FileFd: public Fd
 	public:
 		FileFd() = default;
 		explicit FileFd(int fd): Fd(fd) {}
-		FileFd(std::string_view filename, FileFlags flags)
+		FileFd(std::string_view filename, FdFlags flags)
 		{
 			if (filename[filename.size()])
 				throw CpposixException("The string argument is not null terminated");
 			_fd = ::open(filename.data(), flags.flags);
 		}
 
-		FileFd(std::string_view filename, FileFlags flags, FileMode creation_mode)
+		FileFd(std::string_view filename, FdFlags flags, FileMode creation_mode)
 		{
 			if (filename[filename.size()])
 				throw CpposixException("The string argument is not null terminated");

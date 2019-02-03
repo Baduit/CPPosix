@@ -15,6 +15,17 @@
 namespace Cpposix
 {
 
+struct FdFlags
+{
+	FdFlags() = default;
+	FdFlags(int f): flags(f) {}
+
+	template <typename ...Args>
+	FdFlags(Args... args): flags((... | args)) {}
+
+	int flags = 0;
+};
+
 class Fd
 {
 	public:

@@ -53,6 +53,16 @@ Expected<Void>		chdir(std::string_view dirname)
 		return Error();
 }
 
+Expected<std::string>	getCurrentDir()
+{
+	char *dirname = get_current_dir_name();
+	if (dirname == NULL)
+		return Error();
+	std::string result(dirname);
+	free(dirname);
+	return result;
+}
+
 Expected<Void>		unlink(std::string_view filename)
 {
 	if (filename[filename.size()])
@@ -156,7 +166,7 @@ Expected<Void>	truncate(std::string_view filename, off_t length)
 		return Error();
 }
 
-Expected<long>	path_conf(std::string_view filename, int name)
+Expected<long>	pathConf(std::string_view filename, int name)
 {	
 	if (filename[filename.size()])
 		throw CpposixException("The string argument is not null terminated");
