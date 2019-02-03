@@ -27,7 +27,7 @@ class FileFd: public Fd
 	public:
 		FileFd() = default;
 		explicit FileFd(int fd): Fd(fd) {}
-		FileFd(std::string_view filename, FdFlags flags)
+		FileFd(std::string_view filename, FdFlags flags = {})
 		{
 			if (filename[filename.size()])
 				throw CpposixException("The string argument is not null terminated");

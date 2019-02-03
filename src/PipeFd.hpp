@@ -50,4 +50,18 @@ class Pipe
 		PipeFd _writer;
 };
 
+class NamedPipeFd: public PipeFd
+{
+	public:
+		NamedPipeFd() = default;
+		explicit NamedPipeFd(int fd): PipeFd(fd) {}
+
+		explicit NamedPipeFd(std::string_view filename, FdFlags flags = {})
+		{
+			if (filename[filename.size()])
+				throw CpposixException("The string argument is not null terminated");
+			_fd = ::open(filename.data(), flags.flags);
+		}
+};
+
 }
