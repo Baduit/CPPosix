@@ -89,6 +89,19 @@ void test_pipe()
 	assert(p.read<uint8_t>().getOr('B') == 'C');
 }
 
+void test_dup()
+{
+	FileFd dev_null("/dev/null");
+	Fd standard_output(1);
+	assert(dev_null);
+	{
+		standard_output.write(std::string("You should see \"Success\" in the next line\n"));
+		RedirectFd redirection(standard_output, dev_null);
+		standard_output.write(std::string("ERROR\n"));
+	}
+	standard_output.write(std::string("Success\n"));
+}
+
 int main()
 {
 	test_write();
@@ -96,4 +109,5 @@ int main()
 	test_read();
 	test_readExact();
 	test_pipe();
+	test_dup();
 }

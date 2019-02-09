@@ -16,17 +16,17 @@ Expected<FdType>	dup(const FdType& fd)
 		return FdType(result);
 }
 
-Expected<Void> dup(Fd& old_fd, Fd& new_fd)
+Expected<Void> dup(const Fd& old_fd, const Fd& new_fd)
 {
-	if (::dup2(old_fd.getFdAsInt(), new_fd.getFdAsInt()) == -1)
+	if (::dup2(new_fd.getFdAsInt(), old_fd.getFdAsInt()) == -1)
 		return Error();
 	else
 		return Void();
 }
 
-Expected<Void> dup(Fd& old_fd, Fd& new_fd, FdFlags flags)
+Expected<Void> dup(const Fd& old_fd, const Fd& new_fd, FdFlags flags)
 {
-	if (::dup3(old_fd.getFdAsInt(), new_fd.getFdAsInt(), flags.flags) == -1)
+	if (::dup3(new_fd.getFdAsInt(), old_fd.getFdAsInt(), flags.flags) == -1)
 		return Error();
 	else
 		return Void();
@@ -36,27 +36,27 @@ class RedirectFd
 {
 	public:
 		RedirectFd(Fd& old_fd, Fd& new_fd):
-			_remember_fd(dup(old_fd)),
-			_old_fd(old_fd)
+			_old_fd(old_fd),
+			_dup_old_fd(std::move(dup(old_fd).get()))
 		{
 			dup(old_fd, new_fd);
 		}
 
 		RedirectFd(Fd& old_fd, Fd& new_fd, FdFlags flags):
-			_remember_fd(dup(old_fd)),
-			_old_fd(old_fd)
+			_old_fd(old_fd),
+			_dup_old_fd(std::move(dup(old_fd).get()))
 		{
 			dup(old_fd, new_fd, flags.flags);
 		}
 
 		~RedirectFd()
 		{
-			dup(_remember_fd, _old_fd);
+			dup(_old_fd, _dup_old_fd);
 		}
 
 	private:
-		Fd	_remember_fd;
 		Fd&	_old_fd;
+		Fd	_dup_old_fd;
 };
 
 // poll(vector<pair<fd&, event to watch>>, optional timeout) -> vector<pair<Fd&, event catched>>
