@@ -33,6 +33,12 @@ class Pipe
 		
 		template <typename ...Args>
 		auto	read(Args&&... args) { return _reader.read(args...); }
+
+		template <typename T>
+		Expected<T>	read() { return _reader.read<T>(); }
+
+		template <typename T>
+		Expected<T>	read(std::size_t size) { _reader.read<T>(size); }
 		
 		template <typename ...Args>
 		auto	readIn(Args&&... args) { return _reader.readIn(args...); }

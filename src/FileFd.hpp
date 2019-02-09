@@ -8,9 +8,6 @@
 namespace Cpposix
 {
 
-using FileStat = struct stat;
-using FileStatVfs = struct statvfs;
-
 struct FileMode
 {
 	FileMode() = default;

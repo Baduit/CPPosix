@@ -13,6 +13,7 @@
 #include "SocketFd.hpp"
 #include "PipeFd.hpp"
 #include "FdFunctions.hpp"
+#include "Dir.hpp"
 
 using namespace Cpposix;
 using namespace std::string_literals;
@@ -74,10 +75,25 @@ void test_readExact()
 	assert(fd.readExact<std::string>(50));
 }
 
+void test_pipe()
+{
+	Pipe p;
+	assert(p);
+
+	assert(p.write(static_cast<std::byte>('A')) == 1);
+	char c;
+	assert(p.readIn(c) == 1);
+	assert(c == 'A');
+
+	assert(p.write(static_cast<std::byte>('C')) == 1);
+	assert(p.read<uint8_t>().get_or('B') == 'C');
+}
+
 int main()
 {
 	test_write();
 	test_readIn();
 	test_read();
 	test_readExact();
+	test_pipe();
 }
