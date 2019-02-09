@@ -50,6 +50,7 @@
 		"xthread": "cpp",
 		"thread": "cpp",
 		"unordered_map": "cpp",
-		"xhash": "cpp"
+		"xhash": "cpp",
+		"optional": "cpp"
 	}
 }

@@ -23,12 +23,12 @@ void test_expected()
 	Expected<int> eint = 5;
 	assert(eint);
 	assert(eint.get() == 5);
-	assert(eint.get_or(10) == 5);
+	assert(eint.getOr(10) == 5);
 	assert(*eint == 5);
 
 	Expected<int> eerr = Error {};
-	assert(eerr.get_or(10) == 10);
-	assert(eerr.get_error().getErrnoValue() == Error().getErrnoValue());
+	assert(eerr.getOr(10) == 10);
+	assert(eerr.getError().getErrnoValue() == Error().getErrnoValue());
 	assert(!eerr);
 }
 

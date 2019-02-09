@@ -212,7 +212,7 @@ class Fd
 		}
 
 
-	private:
+	public:
 		/* Write */
 		template <typename Writable, typename = IsWritable<Writable>>
 		Expected<std::size_t>	writePointer(const Writable* writable_ptr, std::size_t size)
@@ -273,7 +273,7 @@ class Fd
 			if (result)
 				return readable;
 			else
-				return Expected<Readable>(result.get_error());
+				return Expected<Readable>(result.getError());
 
 		}
 
@@ -286,7 +286,7 @@ class Fd
 			if (result)
 				return readableContainer;
 			else
-				return Expected<ReadableContainer>(result.get_error());
+				return Expected<ReadableContainer>(result.getError());
 		}
 
 		/* Read Exact */
@@ -299,7 +299,7 @@ class Fd
 			{
 				auto result = readInPointer((&readable) + total_readed_size, size - total_readed_size);
 				if (!result)
-					return Expected<Readable>(result.get_error());
+					return Expected<Readable>(result.getError());
 				total_readed_size += result.get();
 			}
 			return readable;
@@ -316,7 +316,7 @@ class Fd
 			{
 				auto result = readInPointer(&readableContainer[total_readed_size], size - total_readed_size);
 				if (!result)
-					return Expected<ReadableContainer>(result.get_error());
+					return Expected<ReadableContainer>(result.getError());
 				total_readed_size += result.get();
 			}
 			return readableContainer;

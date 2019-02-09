@@ -26,16 +26,16 @@ void test_write()
 
 	Fd fd(1);
 	assert(fd);
-	assert(fd.write(static_cast<uint8_t>('I')).get_or(0) == sizeof(uint8_t));
+	assert(fd.write(static_cast<uint8_t>('I')).getOr(0) == sizeof(uint8_t));
 
 	std::string str = "\nContainer";
-	assert(fd.write(str).get_or(0) == str.size());
-	assert(fd.write(str, 50).get_or(0) == 0);
+	assert(fd.write(str).getOr(0) == str.size());
+	assert(fd.write(str, 50).getOr(0) == 0);
 
 	std::string str2 = "\nContainerblabla";
-	assert(fd.write(str2, str.size()).get_or(0) == str.size());
+	assert(fd.write(str2, str.size()).getOr(0) == str.size());
 
-	assert(fd.write("\n", 1).get_or(0) == 1);
+	assert(fd.write("\n", 1).getOr(0) == 1);
 
 	assert((fd << "Operator <<\n"s));
 }
@@ -47,12 +47,12 @@ void test_readIn()
 	assert(fd);
 
 	int32_t i;
-	assert(fd.readIn(i).get_or(0) == sizeof(int32_t));
+	assert(fd.readIn(i).getOr(0) == sizeof(int32_t));
 
 	std::vector<uint8_t> v(10);
-	assert(fd.readIn(v).get_or(0) == 10);
-	assert(fd.readIn(v, 5).get_or(0) == 5);
-	assert(fd.readIn(v.data(), 5).get_or(0) == 5);
+	assert(fd.readIn(v).getOr(0) == 10);
+	assert(fd.readIn(v, 5).getOr(0) == 5);
+	assert(fd.readIn(v.data(), 5).getOr(0) == 5);
 	assert((fd >> v));
 	assert(!fd.readIn(v, 25));
 }
@@ -86,7 +86,7 @@ void test_pipe()
 	assert(c == 'A');
 
 	assert(p.write(static_cast<std::byte>('C')) == 1);
-	assert(p.read<uint8_t>().get_or('B') == 'C');
+	assert(p.read<uint8_t>().getOr('B') == 'C');
 }
 
 int main()

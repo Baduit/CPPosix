@@ -65,4 +65,16 @@ class RedirectFd
 // select (vector<Fd&> read, vector<Fd&> write, vector<Fd&> signal, optional_timeout) -> structure avec les 3 
 // remplacer les 3 arguments par une structure contenant les 3
 
+// mouai bof pas super, ça retient rien, si dans une boucle tout est reset et tout
+
+/*
+class FdEvent
+{
+	public:
+
+	private:
+		
+};
+*/
+
 }

@@ -11,12 +11,12 @@
 namespace Cpposix
 {
 
-class CpposixException
+class CpposixException: public std::exception
 {
 	public:
 		explicit CpposixException(std::string_view msg): _msg(msg) {}
 
-		const char* what() const { return _msg.c_str(); }
+		virtual const char* what() const noexcept { return _msg.c_str(); }
 
 	private:
 		std::string _msg;
@@ -69,14 +69,14 @@ class Expected
 		T& get() { return std::get<1>(_variant); }
 		const T& get() const { return std::get<1>(_variant); }
 
-		T get_or(const T& t)
+		T getOr(const T& t)
 		{
 			if (_variant.index() == 1)
 				return get();
 			else
 				return t;
 		}
-		T get_or(const T& t) const
+		T getOr(const T& t) const
 		{
 			if (_variant.index() == 1)
 				return get();
@@ -84,7 +84,7 @@ class Expected
 				return t;
 		}
 
-		Error get_error() const { return std::get<0>(_variant); }
+		Error getError() const { return std::get<0>(_variant); }
 
 		operator bool() { return _variant.index(); }
 		operator bool() const { return _variant.index(); }
