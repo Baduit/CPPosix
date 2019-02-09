@@ -31,6 +31,7 @@ class Fd
 	public:
 		Fd() = default;
 		explicit Fd(int fd): _fd(fd) {}
+		explicit Fd(bool) = delete;
 
 		Fd(const Fd&) = delete;
 		Fd(Fd&& other)
