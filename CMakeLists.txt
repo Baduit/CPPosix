@@ -28,3 +28,6 @@ add_executable(termios.test ${SRCS_TERMIOS})
 
 set(SRCS_ID test/test_id.cpp)
 add_executable(id.test ${SRCS_ID})
+
+set(SRCS_PROCESS test/test_process.cpp)
+add_executable(process.test ${SRCS_PROCESS})
