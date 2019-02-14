@@ -269,7 +269,6 @@ class DynamicBuffer
 
 	private:
 		std::vector<std::byte> _container;
-		// probably store read index
 };
 
 template<std::size_t N = DEFAULT_STATIC_BUFFER_SIZE>
@@ -278,12 +277,218 @@ class StaticBuffer
 	public:
 		StaticBuffer() = default;
 
-		/* template <typename T>
-		StaticBuffer& operator<<(const T& t)
+				template <typename T>
+		StaticBuffer& operator<<(const T& t) { write(t, 0); return *this; }
+
+		template <typename T>
+		StaticBuffer& operator>>(T& buffer) { readIn(buffer, 0); return *this; }
+
+		/* Write */
+		template <typename T>
+		std::size_t	write(const T* t, std::size_t offset, std::size_t size) { return writePointer(t, offset, size); }
+
+		template <typename T>
+		std::size_t	write(const T& t, std::size_t offset, std::size_t size)
 		{
-			push(t);
-			return *this;
-		} */
+			if constexpr (std::is_pointer<T>() || std::is_array<T>())
+				return writePointer(t, offset, size);
+			else if constexpr (isWritable<T>())
+				return writeWritable(t, offset, size);
+			else if constexpr (isWritableContainer<T>())
+				return writeContainer(t, offset, size);
+			else
+			{
+				static_assert(isWritable<T>() || std::is_pointer<T>() || std::is_array<T>() || isWritableContainer<T>(), "You are trying to write something you should not try to write.");
+				return {};
+			}
+		}
+
+		template <typename T>
+		std::size_t	write(const T& t, std::size_t offset)
+		{
+			if constexpr (isWritable<T>())
+				return writeWritable(t, offset);
+			else if constexpr (isWritableContainer<T>())
+				return writeContainer(t, offset);
+			else
+			{
+				static_assert(isWritable<T>() || isWritableContainer<T>(), "You are trying to write something you should not try to write.");
+				return {};
+			}
+		}
+
+		/* Read in */
+		template <typename T>
+		std::size_t	readIn(T* t, std::size_t offset, std::size_t size) { return readInPointer(t, offset, size); }
+		
+		template <typename T>
+		std::size_t	readIn(T& buffer, std::size_t offset, std::size_t size)
+		{
+			if constexpr (isReadable<T>())
+				return readInReadable(buffer, offset, size);
+			else if constexpr (isReadableInContainer<T>())
+				return readInContainer(buffer, offset, size);
+			else
+			{
+				static_assert(isReadable<T>() || std::is_pointer<T>() || std::is_array<T>() || isReadableInContainer<T>(), "You are trying to read in something you should not.");
+				return {};
+			}
+		}
+
+		template <typename T>
+		std::size_t	readIn(T& t, std::size_t offset)
+		{
+			if constexpr (isReadable<T>())
+				return readInReadable(t, offset);
+			else if constexpr (isReadableInContainer<T>())
+				return readInContainer(t, offset);
+			else
+			{
+				static_assert(isReadable<T>() || isReadableInContainer<T>(), "You are trying to read in something you should not.");
+				return {};
+			}
+		}
+
+
+		/* Read */
+		template <typename T>
+		Expected<T>	read(std::size_t offset) { return readReadable<T>(offset); }
+
+		template <typename T>
+		Expected<T>	read(std::size_t offset, std::size_t size)
+		{
+			if constexpr (isReadable<T>())
+				return readReadable<T>(offset, size);
+			else if constexpr (isReadableContainer<T>())
+				return readContainer<T>(offset, size);
+			else
+			{
+				static_assert(isReadable<T>() || isReadableInContainer<T>(), "You are trying to write something you should not.");
+				return {};
+			}
+		}
+
+		/* Read exact */
+		template <typename T>
+		Expected<T>	readExact(std::size_t offset) { return readExactReadable<T>(offset); }
+
+		template <typename T>
+		Expected<T>	readExact(std::size_t offset, std::size_t size)
+		{
+			if constexpr (isReadable<T>())
+				return readExactReadable<T>(offset, size);
+			else if constexpr (isReadableContainer<T>())
+				return readExactContainer<T>(offset, size);
+			else
+			{
+				static_assert(isReadable<T>() || isReadableInContainer<T>(), "You are trying to write something you should not.");
+				return {};
+			}
+		}
+
+
+	public:
+		/* Write */
+		template <typename Writable, typename = IsWritable<Writable>>
+		std::size_t	writePointer(const Writable* writable_ptr, std::size_t offset, std::size_t size)
+		{
+			if (size + offset > _container.size())
+				throw CpposixException("Static buffer: Out ouf range writing");
+			std::memcpy(&(_container[offset]), writable_ptr, sizeof(Writable) * size);
+			return static_cast<std::size_t>(sizeof(Writable)  *size);
+		}
+
+		template <typename Writable, typename = IsWritable<Writable>>
+		std::size_t	writeWritable(const Writable& writable, std::size_t offset, std::size_t size = sizeof(Writable)) { return writePointer(&writable, offset, size); }
+
+		template <typename WritableContainer, typename = IsWritableContainer<WritableContainer>>
+		std::size_t	writeContainer(const WritableContainer& writableContainer, std::size_t offset) { return writePointer(writableContainer.data(), offset, writableContainer.size()); }
+
+		template <typename WritableContainer, typename = IsWritableContainer<WritableContainer>>
+		std::size_t	writeContainer(const WritableContainer& writableContainer, std::size_t offset, std::size_t size)
+		{
+			return (size <= writableContainer.size()) ? writePointer(writableContainer.data(), offset, size) : Error(EFAULT);
+		}
+
+		/* Read in */
+		template <typename Readable, typename = IsReadable<Readable>>
+		std::size_t	readInPointer(Readable* readable_ptr, std::size_t offset, std::size_t size)
+		{
+			if (size + offset > _container.size())
+				throw CpposixException("Static buffer: Out ouf range reading");
+			std::memcpy(readable_ptr, &(_container[offset]), sizeof(Readable) * size);
+			return static_cast<std::size_t>(sizeof(Readable) * size);
+		}
+
+		template <typename Readable, typename = IsReadable<Readable>>
+		std::size_t	readInReadable(Readable& readable, std::size_t offset, std::size_t size = sizeof(Readable)) { return readInPointer(&readable, offset, size); }
+
+		template <typename ReadableInContainer, typename = IsReadableInContainer<ReadableInContainer>>
+		std::size_t	readInContainer(ReadableInContainer& readableInContainer, std::size_t offset) { return readInPointer(readableInContainer.data(), offset, readableInContainer.size()); }
+
+		template <typename ReadableInContainer, typename = IsReadableInContainer<ReadableInContainer>>
+		std::size_t	readInContainer(ReadableInContainer& readableInContainer, std::size_t offset, std::size_t size)
+		{
+			return (size <= readableInContainer.size()) ? readInPointer(readableInContainer.data(), offset, size) : Error(EFAULT);
+		}
+
+		/* Read */
+		template <typename Readable, typename = IsReadable<Readable>>
+		Expected<Readable>	readReadable(std::size_t offset, std::size_t size = sizeof(Readable))
+		{
+			Readable readable {};
+			auto result = readInReadable(readable, offset, size);
+			if (result)
+				return readable;
+			else
+				return Expected<Readable>(result.getError());
+
+		}
+
+		template <typename ReadableContainer, typename = IsReadableContainer<ReadableContainer>>
+		Expected<ReadableContainer>	readContainer(std::size_t offset, std::size_t size)
+		{
+			ReadableContainer readableContainer;
+			readableContainer.resize(size);
+			auto result = readInContainer(readableContainer, offset, size);
+			if (result)
+				return readableContainer;
+			else
+				return Expected<ReadableContainer>(result.getError());
+		}
+
+		/* Read Exact */
+		template <typename Readable, typename = IsReadable<Readable>>
+		Expected<Readable>	readExactReadable(std::size_t offset, std::size_t size = sizeof(Readable))
+		{
+			Readable readable {};
+			std::size_t total_readed_size = 0;
+			while (total_readed_size < size)
+			{
+				auto result = readInPointer((&readable) + total_readed_size, offset, size - total_readed_size);
+				if (!result)
+					return Expected<Readable>(result.getError());
+				total_readed_size += result.get();
+			}
+			return readable;
+
+		}
+
+		template <typename ReadableContainer, typename = IsReadableContainer<ReadableContainer>>
+		Expected<ReadableContainer>	readExactContainer(std::size_t offset, std::size_t size)
+		{
+			ReadableContainer readableContainer;
+			readableContainer.resize(size);
+			std::size_t total_readed_size = 0;
+			while (total_readed_size < size)
+			{
+				auto result = readInPointer(&readableContainer[total_readed_size], offset, size - total_readed_size);
+				if (!result)
+					return Expected<ReadableContainer>(result.getError());
+				total_readed_size += result.get();
+			}
+			return readableContainer;
+		}
 
 	public:
 		auto	begin()	{ return _container.begin(); }
@@ -300,9 +505,7 @@ class StaticBuffer
 		std::size_t size() const { return _container.size(); }
 		std::size_t max_size() const { return _container.max_size(); }
 
-		void	clear() { /*probably memset*/ }
-
-	
+		void	clear() { _container.fill(0); }
 
 		std::byte	operator[](std::size_t position) { return _container[position]; }
 		std::byte	at(std::size_t position) { return _container.at(position); }
@@ -315,6 +518,5 @@ class StaticBuffer
 
 	private:
 		std::array<std::byte, N> _container;
-		// probably store read and write index
 };
 }

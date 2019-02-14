@@ -9,6 +9,8 @@
 
 using namespace Cpposix;
 
+
+// the tests are pretty straightforward because both use almost the same code as the Fd so i only test what's different
 void dynamic_buffer()
 {
 	DynamicBuffer buff;
@@ -26,7 +28,7 @@ void dynamic_buffer()
 	buff >> a;
 	assert(a == 11);
 	assert(buff.size() == 1);
-	
+
 	buff >> a;
 	assert(a == 12);
 	assert(buff.empty());
@@ -34,7 +36,16 @@ void dynamic_buffer()
 
 void static_buffer()
 {
-	
+	StaticBuffer buff;
+
+	buff << static_cast<uint8_t>(10);
+	uint8_t a;
+	buff >> a;
+	assert(a == 10);
+
+	buff.write(static_cast<uint8_t>(15), 1);
+	buff.readIn(a, 1);
+	assert(a == 15);
 }
 
 int main()
