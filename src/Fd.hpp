@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <sys/ioctl.h>
 #include <fcntl.h>
+#include <functional>
 
 #include "Concept.hpp"
 #include "Expected.hpp"
@@ -327,5 +328,7 @@ class Fd
 	protected:
 		int _fd = -1;
 };
+
+using FdRef = std::reference_wrapper<Fd>;
 
 }

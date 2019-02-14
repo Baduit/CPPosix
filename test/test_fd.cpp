@@ -102,6 +102,26 @@ void test_dup()
 	standard_output.write(std::string("Success\n"));
 }
 
+void test_select()
+{
+	{
+		FileFd fd("Makefile", O_RDONLY);
+		FdEvent fd_event { { fd }, {}, {} };
+
+		auto result = fdSelect(fd_event);
+		assert(result);
+		assert(result->read[0].get().getFdAsInt() == fd.getFdAsInt());
+	}
+	{
+		FileFd fd(0);
+		FdEvent fd_event { { fd }, {}, {} };
+
+		std::cout << "Wait 1s begin, it will be shorter you write in the command line" << std::endl;
+		auto result = fdSelect(fd_event, std::chrono::seconds(1));
+		std::cout << "Wait 1s end" << std::endl;
+	}
+}
+
 int main()
 {
 	test_write();
@@ -110,4 +130,5 @@ int main()
 	test_readExact();
 	test_pipe();
 	test_dup();
+	test_select();
 }
