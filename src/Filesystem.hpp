@@ -9,7 +9,7 @@
 namespace Cpposix
 {
 
-Expected<Void>		rename(std::string_view old_name, std::string_view new_name)
+inline Expected<Void>		rename(std::string_view old_name, std::string_view new_name)
 {
 	if (old_name[old_name.size()] || new_name[new_name.size()])
 		throw CpposixException("The string argument is not null terminated");
@@ -20,7 +20,7 @@ Expected<Void>		rename(std::string_view old_name, std::string_view new_name)
 		return Error();
 }
 
-Expected<Void>		rmdir(std::string_view dirname)
+inline Expected<Void>		rmdir(std::string_view dirname)
 {
 	if (dirname[dirname.size()])
 		throw CpposixException("The string argument is not null terminated");
@@ -31,7 +31,7 @@ Expected<Void>		rmdir(std::string_view dirname)
 		return Error();
 }
 
-Expected<Void>		mkdir(std::string_view dirname, FileMode mode = { static_cast<mode_t>(S_IRWXO) })
+inline Expected<Void>		mkdir(std::string_view dirname, FileMode mode = { static_cast<mode_t>(S_IRWXO) })
 {
 	if (dirname[dirname.size()])
 		throw CpposixException("The string argument is not null terminated");
@@ -42,7 +42,7 @@ Expected<Void>		mkdir(std::string_view dirname, FileMode mode = { static_cast<mo
 		return Error();
 }
 
-Expected<Void>		chdir(std::string_view dirname)
+inline Expected<Void>		chdir(std::string_view dirname)
 {
 	if (dirname[dirname.size()])
 		throw CpposixException("The string argument is not null terminated");
@@ -53,7 +53,7 @@ Expected<Void>		chdir(std::string_view dirname)
 		return Error();
 }
 
-Expected<std::string>	getCurrentDir()
+inline Expected<std::string>	getCurrentDir()
 {
 	char *dirname = get_current_dir_name();
 	if (dirname == NULL)
@@ -63,7 +63,7 @@ Expected<std::string>	getCurrentDir()
 	return result;
 }
 
-Expected<Void>		unlink(std::string_view filename)
+inline Expected<Void>		unlink(std::string_view filename)
 {
 	if (filename[filename.size()])
 		throw CpposixException("The string argument is not null terminated");
@@ -74,7 +74,7 @@ Expected<Void>		unlink(std::string_view filename)
 		return Error();
 }
 
-Expected<Void>		link(std::string_view target, std::string_view linkname)
+inline Expected<Void>		link(std::string_view target, std::string_view linkname)
 {
 	if (target[target.size()] || linkname[linkname.size()])
 		throw CpposixException("The string argument is not null terminated");
@@ -85,7 +85,7 @@ Expected<Void>		link(std::string_view target, std::string_view linkname)
 		return Error();
 }
 
-Expected<Void>		symlink(std::string_view target, std::string_view linkname)
+inline Expected<Void>		symlink(std::string_view target, std::string_view linkname)
 {
 	if (target[target.size()] || linkname[linkname.size()])
 		throw CpposixException("The string argument is not null terminated");
@@ -96,7 +96,7 @@ Expected<Void>		symlink(std::string_view target, std::string_view linkname)
 		return Error();
 }
 
-Expected<Void>		mkfifo(std::string_view filename, FileMode mode)
+inline Expected<Void>		mkfifo(std::string_view filename, FileMode mode)
 {
 	if (filename[filename.size()])
 		throw CpposixException("The string argument is not null terminated");
@@ -107,7 +107,7 @@ Expected<Void>		mkfifo(std::string_view filename, FileMode mode)
 		return Error();
 }
 
-Expected<FileStat>	stat(std::string_view filename)
+inline Expected<FileStat>	stat(std::string_view filename)
 {
 	if (filename[filename.size()])
 		throw CpposixException("The string argument is not null terminated");
@@ -120,7 +120,7 @@ Expected<FileStat>	stat(std::string_view filename)
 		return Error();
 }
 
-Expected<FileStatVfs>	statVfs(std::string_view filename)
+inline Expected<FileStatVfs>	statVfs(std::string_view filename)
 {
 	if (filename[filename.size()])
 		throw CpposixException("The string argument is not null terminated");
@@ -133,7 +133,7 @@ Expected<FileStatVfs>	statVfs(std::string_view filename)
 		return Error();
 }
 
-Expected<Void>	chmod(std::string_view filename, mode_t mode)
+inline Expected<Void>	chmod(std::string_view filename, mode_t mode)
 {	
 	if (filename[filename.size()])
 		throw CpposixException("The string argument is not null terminated");
@@ -144,7 +144,7 @@ Expected<Void>	chmod(std::string_view filename, mode_t mode)
 		return Error();
 }
 
-Expected<Void>	chown(std::string_view filename, uid_t owner, gid_t group)
+inline Expected<Void>	chown(std::string_view filename, uid_t owner, gid_t group)
 {	
 	if (filename[filename.size()])
 		throw CpposixException("The string argument is not null terminated");
@@ -155,7 +155,7 @@ Expected<Void>	chown(std::string_view filename, uid_t owner, gid_t group)
 		return Error();
 }
 
-Expected<Void>	truncate(std::string_view filename, off_t length)
+inline Expected<Void>	truncate(std::string_view filename, off_t length)
 {	
 	if (filename[filename.size()])
 		throw CpposixException("The string argument is not null terminated");
@@ -166,7 +166,7 @@ Expected<Void>	truncate(std::string_view filename, off_t length)
 		return Error();
 }
 
-Expected<long>	pathConf(std::string_view filename, int name)
+inline Expected<long>	pathConf(std::string_view filename, int name)
 {	
 	if (filename[filename.size()])
 		throw CpposixException("The string argument is not null terminated");

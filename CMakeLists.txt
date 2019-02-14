@@ -25,3 +25,6 @@ add_executable(filesystem.test ${SRCS_FILESYSTEM})
 
 set(SRCS_TERMIOS test/test_termios.cpp)
 add_executable(termios.test ${SRCS_TERMIOS})
+
+set(SRCS_ID test/test_id.cpp)
+add_executable(id.test ${SRCS_ID})

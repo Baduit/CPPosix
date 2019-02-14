@@ -16,7 +16,7 @@ Expected<FdType>	dup(const FdType& fd)
 		return FdType(result);
 }
 
-Expected<Void> dup(const Fd& old_fd, const Fd& new_fd)
+inline Expected<Void> dup(const Fd& old_fd, const Fd& new_fd)
 {
 	if (::dup2(new_fd.getFdAsInt(), old_fd.getFdAsInt()) == -1)
 		return Error();
@@ -24,7 +24,7 @@ Expected<Void> dup(const Fd& old_fd, const Fd& new_fd)
 		return Void();
 }
 
-Expected<Void> dup(const Fd& old_fd, const Fd& new_fd, FdFlags flags)
+inline Expected<Void> dup(const Fd& old_fd, const Fd& new_fd, FdFlags flags)
 {
 	if (::dup3(new_fd.getFdAsInt(), old_fd.getFdAsInt(), flags.flags) == -1)
 		return Error();
