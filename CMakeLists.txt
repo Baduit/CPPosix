@@ -6,19 +6,22 @@ add_definitions(-std=c++17 -Wextra -Wall -Wsign-conversion -Wfloat-equal -pedant
 
 
 set(SRCS_EXPECTED test/test_expected.cpp)
-add_executable(test_expected ${SRCS_EXPECTED})
+add_executable(expected.test ${SRCS_EXPECTED})
 
 set(SRCS_CONCEPT test/test_concept.cpp)
-add_executable(test_concept ${SRCS_CONCEPT})
+add_executable(concept.test ${SRCS_CONCEPT})
 
 set(SRCS_BUFFER test/test_buffer.cpp)
-add_executable(test_buffer ${SRCS_BUFFER})
+add_executable(buffer.test ${SRCS_BUFFER})
 
 set(SRCS_FD test/test_fd.cpp)
-add_executable(test_fd ${SRCS_FD})
+add_executable(fd.test ${SRCS_FD})
 
 set(SRCS_ENV test/test_env.cpp)
-add_executable(test_env ${SRCS_ENV})
+add_executable(env.test ${SRCS_ENV})
 
 set(SRCS_FILESYSTEM test/test_filesystem.cpp)
-add_executable(test_filesystem ${SRCS_FILESYSTEM})
+add_executable(filesystem.test ${SRCS_FILESYSTEM})
+
+set(SRCS_TERMIOS test/test_termios.cpp)
+add_executable(termios.test ${SRCS_TERMIOS})
