@@ -39,4 +39,16 @@ int main()
 		assert(yolol_env);
 		assert(yolol_env.get() == "kkkk");
 	}
+
+	{
+		Env env;
+		assert(!env["ezzezegzeg"]);
+		assert(env["yolol"] == "salut");
+
+		env["ttttt"] = "888";
+		assert(env["ttttt"] == "888");
+
+		env["yolol"] = "not_salut_anymore";
+		assert(env["yolol"] == "not_salut_anymore");
+	}
 }

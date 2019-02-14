@@ -60,21 +60,54 @@ Expected<Void>	clearEnv()
 	return Void();
 }
 
+struct EnvValue
+{
+	EnvValue& operator=(std::string_view str)
+	{
+		if (setEnv(key, str))
+		{
+			value = str;
+			valid = true;
+		}
+		return *this;
+	}
+
+	operator std::string() const { return value; }
+	operator bool() const { return valid; }
+
+	bool operator==(std::string_view str) { return value == str; }
+	bool operator!=(std::string_view str) { return value != str; }
+
+	std::string value;
+	std::string key;
+	bool valid = true;
+};
+
+// overhead here, but make something practical to use and without overhead would take some time i don't have
 class Env
 {
 	public:
-		Env()
+		Env(): _env(environ)
 		{
 			// some stuff later
 			// man 7 environ
 		}
 
-		//operator [] -> the special struct optional ref asignable
+		EnvValue	operator[](std::string_view key)
+		{
+			auto value = getEnv(key);
+			if (value)
+			{
+				return EnvValue { *value, std::string(key), true };
+			}
+			else
+			{
+				return EnvValue { "", std::string(key), false };
+			}
+			
+		}
 
-		// iterators
-		// create my own iterators
-	private:
-
+		char** _env;
 };
 
 }
