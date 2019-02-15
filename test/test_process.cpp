@@ -11,9 +11,9 @@
 
 using namespace Cpposix;
 
-int main()
+void test_child_process()
 {
-	{
+		{
 		auto cb =
 			[]()
 			{
@@ -76,4 +76,52 @@ int main()
 		assert(*b == 15);
 		p.wait();
 	}
+}
+
+void test_exec()
+{
+	{
+		ChildProcess p
+		(
+			[]
+			{
+				std::cout << "You should see a ls below." << std::endl;
+				exec("ls", {}, {});
+				assert(false);
+			}
+		);
+		assert(p.wait());
+	}
+
+	{
+		ChildProcess p
+		(
+			[]
+			{
+				std::cout << "If message: 'SUCCESS' does not appear in the next line, there is a failure" << std::endl;
+				assert(!exec("ihopethereisnowexectuablewiththisname", {}, {}));
+				std::cout << "SUCCESS" << std::endl;
+			}
+		);
+		assert(p.wait());
+	}
+
+	{
+		ChildProcess p
+		(
+			[]
+			{
+				std::cout << "You should see a 'ls /' below." << std::endl;
+				exec("ls", {"/"});
+				assert(false);
+			}
+		);
+		assert(p.wait());
+	}
+}
+
+int main()
+{
+	test_child_process();
+	test_exec();
 }
