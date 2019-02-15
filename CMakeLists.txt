@@ -23,12 +23,6 @@ add_executable(env.test ${SRCS_ENV})
 set(SRCS_FILESYSTEM test/test_filesystem.cpp)
 add_executable(filesystem.test ${SRCS_FILESYSTEM})
 
-set(SRCS_TERMIOS test/test_termios.cpp)
-add_executable(termios.test ${SRCS_TERMIOS})
-
-set(SRCS_ID test/test_id.cpp)
-add_executable(id.test ${SRCS_ID})
-
 set(SRCS_PROCESS test/test_process.cpp)
 add_executable(process.test ${SRCS_PROCESS})
 
