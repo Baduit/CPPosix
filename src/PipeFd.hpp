@@ -43,8 +43,11 @@ class Pipe
 		template <typename ...Args>
 		auto	readIn(Args&&... args) { return _reader.readIn(args...); }
 
-		template <typename ...Args>
-		auto	readExact(Args&&... args) { return _reader.readExact(args...); }
+		template <typename T>
+		Expected<T>	readExact() { return _reader.readExact<T>(); }
+
+		template <typename T>
+		Expected<T>	readExact(std::size_t size) { _reader.readExact<T>(size); }
 
 		PipeFd&	getReaderFd() { return _reader; }
 		const PipeFd&	getReaderFd() const { return _reader; }

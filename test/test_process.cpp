@@ -54,4 +54,26 @@ int main()
 		assert(p.kill());
 		assert(p.wait());
 	}
+
+	{
+		auto cb =
+			[](Pipe& com)
+			{
+				auto a = com.read<uint8_t>();
+				assert(a);
+				assert(*a == 5);
+				auto nb = com.write(static_cast<uint16_t>(15));
+				assert(nb);
+				assert(*nb == sizeof(uint16_t));
+			};
+
+		Pipe com;
+		ChildProcess p(cb, com);
+		com.write(static_cast<uint8_t>(5));
+		std::this_thread::sleep_for(std::chrono::milliseconds(200));
+		auto b = com.read<uint16_t>();
+		assert(b);
+		assert(*b == 15);
+		p.wait();
+	}
 }

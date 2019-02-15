@@ -59,9 +59,7 @@ class ChildProcess
 		}
 
 		pid_t	getChildPid() const { return _pid; }
-	public:
-		Pipe	communication;
-	
+
 	private:
 		pid_t	_pid;
 };
