@@ -31,7 +31,7 @@ inline Expected<Void>		rmdir(std::string_view dirname)
 		return Error();
 }
 
-inline Expected<Void>		mkdir(std::string_view dirname, FileMode mode = { static_cast<mode_t>(S_IRWXO) })
+inline Expected<Void>		mkdir(std::string_view dirname, FileMode mode = all_permissions)
 {
 	if (dirname[dirname.size()])
 		throw CpposixException("The string argument is not null terminated");

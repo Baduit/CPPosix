@@ -23,8 +23,6 @@ int main()
 	assert(stat_info);
 	assert(S_ISDIR(stat_info->st_mode));
 
-	assert(chmod("test/renamed.txt"sv, S_IRWXU));
-
 	auto stat_vfs_info = statVfs("test/renamed.txt"sv);
 	assert(stat_vfs_info);
 

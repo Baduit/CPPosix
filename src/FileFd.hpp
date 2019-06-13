@@ -10,14 +10,16 @@ namespace Cpposix
 
 struct FileMode
 {
-	FileMode() = default;
-	FileMode(mode_t m): mode(m) {}
+	constexpr FileMode() = default;
+	constexpr FileMode(mode_t m): mode(m) {}
 
 	template <typename ...Args>
-	FileMode(Args... args): mode((... | args)) {}
+	constexpr FileMode(Args... args): mode((... | static_cast<mode_t>(args))) {}
 
 	mode_t mode = 0;
 };
+
+constexpr FileMode all_permissions = FileMode(S_IRWXO, S_IRWXU, S_IRWXG);
 
 class FileFd: public Fd
 {
@@ -38,7 +40,7 @@ class FileFd: public Fd
 			_fd = ::open(filename.data(), flags.flags, creation_mode.mode);
 		}
 
-		static Expected<FileFd>	create(std::string_view filename, FileMode creation_mode = { static_cast<mode_t>(S_IRWXO) })
+		static Expected<FileFd>	create(std::string_view filename, FileMode creation_mode = all_permissions)
 		{
 			if (filename[filename.size()])
 				throw CpposixException("The string argument is not null terminated");

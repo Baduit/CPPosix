@@ -126,7 +126,7 @@ class Fd
 			else
 			{
 				static_assert(isWritable<T>() || std::is_pointer<T>() || std::is_array<T>() || isWritableContainer<T>(), "You are trying to write something you should not try to write.");
-				return {};
+				return Expected<std::size_t>();
 			}
 		}
 
@@ -140,7 +140,7 @@ class Fd
 			else
 			{
 				static_assert(isWritable<T>() || isWritableContainer<T>(), "You are trying to write something you should not try to write.");
-				return {};
+				return Expected<std::size_t>();
 			}
 		}
 
@@ -158,7 +158,7 @@ class Fd
 			else
 			{
 				static_assert(isReadable<T>() || std::is_pointer<T>() || std::is_array<T>() || isReadableInContainer<T>(), "You are trying to read in something you should not.");
-				return {};
+				return Expected<std::size_t>();
 			}
 		}
 
@@ -172,7 +172,7 @@ class Fd
 			else
 			{
 				static_assert(isReadable<T>() || isReadableInContainer<T>(), "You are trying to read in something you should not.");
-				return {};
+				return Expected<std::size_t>();
 			}
 		}
 
