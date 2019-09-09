@@ -7,3 +7,4 @@ TODO:
 * Improve the Env part
 * A real readme not
 * Improve the Concept part (the container checks)
+* Hide the IO complexity in the Fd class it makes it really difficult to read
