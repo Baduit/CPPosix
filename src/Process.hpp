@@ -13,8 +13,15 @@ namespace Cpposix
 
 class ChildProcess
 {
+	private:
+		enum class DestructorPolicy
+		{
+			WAIT, // default
+			KILL,
+			DETACH
+		};
+
 	public:
-		// template
 		template <typename Cb, class... Args>
 		ChildProcess(Cb&& cb, Args&&... args)
 		{
@@ -34,6 +41,36 @@ class ChildProcess
 					exit(EXIT_SUCCESS);
 				}
 			}
+		}
+
+		template <typename Cb, class... Args>
+		ChildProcess(DestructorPolicy dtor_policy, Cb&& cb, Args&&... args):
+			ChildProcess(std::forward<Cb>(cb), std::forward<Args>(args)...)
+		{
+			_dtor_policy = dtor_policy;
+		}
+
+		~ChildProcess()
+		{
+			switch (_dtor_policy)
+			{
+				case DestructorPolicy::WAIT :
+				{
+					wait();
+					break;
+				}
+				case DestructorPolicy::KILL :
+				{
+					kill();
+					break;
+				}
+				case DestructorPolicy::DETACH :
+				{
+					// Do nothing
+					break;
+				}
+			}
+
 		}
 
 		Expected<Void>	kill()
@@ -60,8 +97,12 @@ class ChildProcess
 
 		pid_t	getChildPid() const { return _pid; }
 
+		DestructorPolicy	get_destructor_policy() const { return _dtor_policy; }
+		void				set_destructor_policy(DestructorPolicy new_dtor_policy) { _dtor_policy = new_dtor_policy; }
+
 	private:
-		pid_t	_pid;
+		pid_t				_pid;
+		DestructorPolicy	_dtor_policy = DestructorPolicy::WAIT;
 };
 
 namespace

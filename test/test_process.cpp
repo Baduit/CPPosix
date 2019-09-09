@@ -13,7 +13,7 @@ using namespace Cpposix;
 
 void test_child_process()
 {
-		{
+	{
 		auto cb =
 			[]()
 			{
@@ -26,6 +26,24 @@ void test_child_process()
 		auto result = p.wait();
 		assert(result);
 		assert(result.getOr(77) == 5);
+	}
+
+	{
+		auto cb =
+			[]()
+			{
+				std::cout << "It is working! "<< std::endl;
+				std::this_thread::sleep_for(std::chrono::milliseconds(100));
+				return 5;
+			};
+
+		auto start = std::chrono::system_clock::now();		
+		{
+			ChildProcess p(cb);
+		}
+		auto end = std::chrono::system_clock::now();
+        auto diff = end - start;
+		assert(diff.count() >= 100000000);
 	}
 
 	{
