@@ -12,8 +12,7 @@ namespace Cpposix
 
 Expected<std::string>	getEnv(std::string_view name)
 {
-	if (name[name.size()])
-		throw CpposixException("The string argument is not null terminated");
+	check_string_view_null_terminated(name);
 	const char *cstr = getenv(name.data());
 	if (!cstr)
 		return Error();
@@ -22,8 +21,7 @@ Expected<std::string>	getEnv(std::string_view name)
 
 Expected<std::string_view>	getEnvView(std::string_view name)
 {
-	if (name[name.size()])
-		throw CpposixException("The string argument is not null terminated");
+	check_string_view_null_terminated(name);
 	const char *cstr = getenv(name.data());
 	if (!cstr)
 		return Error();
@@ -32,8 +30,7 @@ Expected<std::string_view>	getEnvView(std::string_view name)
 
 Expected<Void>	setEnv(std::string_view name, std::string_view value, bool overwrite = true)
 {
-	if (name[name.size()] || value[value.size()])
-		throw CpposixException("The string argument is not null terminated");
+	check_string_view_null_terminated(name);
 	int overwrite_int = (overwrite) ? 1: 0;
 	if (setenv(name.data(), value.data(), overwrite_int) == -1)
 		return Error();
@@ -46,8 +43,7 @@ Expected<Void>	setEnv(std::string_view name, std::string_view value, bool overwr
 
 Expected<Void>	unsetEnv(std::string_view name)
 {
-	if (name[name.size()])
-		throw CpposixException("The string argument is not null terminated");
+	check_string_view_null_terminated(name);
 	if (unsetenv(name.data()) == -1)
 		return Error();
 	return Void();

@@ -8,6 +8,8 @@
 #include <mutex>
 #include <exception>
 
+//#define CPPOSIX_MACRO_DISABLE_CHECK_STRING_VIEW_NULL_TERMINATED
+
 namespace Cpposix
 {
 
@@ -21,6 +23,14 @@ class CpposixException: public std::exception
 	private:
 		std::string _msg;
 };
+
+inline void check_string_view_null_terminated(std::string_view str)
+{
+	#ifndef CPPOSIX_MACRO_DISABLE_CHECK_STRING_VIEW_NULL_TERMINATED
+		if (str[str.size()])
+			throw CpposixException("The string argument is not null terminated");
+	#endif
+}
 
 std::string_view strerror(int errnum)
 {

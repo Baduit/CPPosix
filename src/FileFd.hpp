@@ -28,22 +28,19 @@ class FileFd: public Fd
 		explicit FileFd(int fd): Fd(fd) {}
 		FileFd(std::string_view filename, FdFlags flags = { O_RDWR })
 		{
-			if (filename[filename.size()])
-				throw CpposixException("The string argument is not null terminated");
+			check_string_view_null_terminated(filename);
 			_fd = ::open(filename.data(), flags.flags);
 		}
 
 		FileFd(std::string_view filename, FdFlags flags, FileMode creation_mode)
 		{
-			if (filename[filename.size()])
-				throw CpposixException("The string argument is not null terminated");
+			check_string_view_null_terminated(filename);
 			_fd = ::open(filename.data(), flags.flags, creation_mode.mode);
 		}
 
 		static Expected<FileFd>	create(std::string_view filename, FileMode creation_mode = all_permissions)
 		{
-			if (filename[filename.size()])
-				throw CpposixException("The string argument is not null terminated");
+			check_string_view_null_terminated(filename);
 			FileFd fd(::creat(filename.data(), creation_mode.mode));
 			if (fd)
 				return fd;

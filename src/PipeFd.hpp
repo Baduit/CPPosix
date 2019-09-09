@@ -67,8 +67,7 @@ class NamedPipeFd: public PipeFd
 
 		explicit NamedPipeFd(std::string_view filename, FdFlags flags = {})
 		{
-			if (filename[filename.size()])
-				throw CpposixException("The string argument is not null terminated");
+			check_string_view_null_terminated(filename);
 			_fd = ::open(filename.data(), flags.flags);
 		}
 };

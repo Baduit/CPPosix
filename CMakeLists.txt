@@ -33,5 +33,8 @@ add_test(test_filesystem filesystem.test)
 add_executable(process.test test/test_process.cpp)
 add_test(test_process process.test)
 
+add_executable(test_check_string_disable_macro.test test/test_check_string_disable_macro.cpp)
+add_test(test_check_string_disable_macro test_check_string_disable_macro.test)
+
 set(SRC_EXAMPLE example/main.cpp)
 add_executable(example.test ${SRC_EXAMPLE})

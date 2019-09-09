@@ -23,8 +23,7 @@ class DirFd
 
 		DirFd(std::string_view dirname)
 		{
-			if (dirname[dirname.size()])
-				throw CpposixException("The string argument is not null terminated");
+			check_string_view_null_terminated(dirname);
 			_dir = opendir(dirname.data());
 			reload();
 		}

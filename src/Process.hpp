@@ -113,8 +113,7 @@ std::vector<const char*>	svVectorToCStringVector(const std::vector<std::string_v
 	std::vector<const char*> cstring_vector;
 	for (auto sv: sv_vector)
 	{
-		if (sv[sv.size()])
-			throw CpposixException("The string argument is not null terminated");
+		check_string_view_null_terminated(sv);
 		cstring_vector.push_back(sv.data());
 	}
 	cstring_vector.push_back(nullptr);
@@ -125,8 +124,7 @@ std::vector<const char*>	svVectorToCStringVector(const std::vector<std::string_v
 
 inline Expected<Void>	exec(std::string_view filename, std::vector<std::string_view> argv)
 {
-	if (filename[filename.size()])
-		throw CpposixException("The string argument is not null terminated");
+	check_string_view_null_terminated(filename);
 	argv.insert(argv.begin(), filename);
 	execvp(filename.data(),(char* const*) (svVectorToCStringVector(argv).data()));
 	return Error();
@@ -134,8 +132,7 @@ inline Expected<Void>	exec(std::string_view filename, std::vector<std::string_vi
 
 inline Expected<Void>	exec(std::string_view filename, std::vector<std::string_view> argv, const std::vector<std::string_view>& arge)
 {
-	if (filename[filename.size()])
-		throw CpposixException("The string argument is not null terminated");
+	check_string_view_null_terminated(filename);
 	argv.insert(argv.begin(), filename);
 	execvpe(filename.data(), (char* const*) (svVectorToCStringVector(argv).data()),(char* const*) (svVectorToCStringVector(arge).data()));
 	return Error();

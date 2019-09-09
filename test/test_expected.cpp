@@ -47,9 +47,41 @@ void test_exception()
 	assert(catched);
 }
 
+void test_check_string_view_null_terminated()
+{
+	{
+		bool catched = false;
+		try
+		{
+			std::string_view str_view = "123456789";
+			check_string_view_null_terminated(str_view);
+		}
+		catch (const CpposixException& e)
+		{
+			catched = true;
+		}
+		assert(!catched);
+	}
+	{
+		bool catched = false;
+		try
+		{
+			std::string_view str_view = "123456789";
+			std::string_view substr_view = str_view.substr(0, 2);
+			check_string_view_null_terminated(substr_view);
+		}
+		catch (const CpposixException& e)
+		{
+			catched = true;
+		}
+		assert(catched);
+	}
+}
+
 int main()
 {
 	test_error();
 	test_expected();
 	test_exception();
+	test_check_string_view_null_terminated();
 }
