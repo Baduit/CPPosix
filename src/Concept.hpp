@@ -3,6 +3,8 @@
 #include <type_traits>
 #include <utility>
 
+#include "ConceptDetails.hpp"
+
 namespace Cpposix
 {
 
@@ -32,34 +34,57 @@ inline constexpr bool isReadable()
 template <typename T>
 inline constexpr bool isWritableContainer()
 {
-	return
-		isWritable<typename T::value_type>() &&
-		std::is_unsigned<decltype(std::declval<T>().size())>::value &&
-		(
-			std::is_same<typename T::value_type*, decltype(std::declval<T>().data())>::value ||
-			std::is_same<const typename T::value_type*, decltype(std::declval<T>().data())>::value
-		)
-	;
+	if constexpr (Details::isContainer<T>())
+	{
+		return
+			isWritable<typename T::value_type>() &&
+			std::is_unsigned<decltype(std::declval<T>().size())>::value &&
+			(
+				std::is_same<typename T::value_type*, decltype(std::declval<T>().data())>::value ||
+				std::is_same<const typename T::value_type*, decltype(std::declval<T>().data())>::value
+			)
+		;
+	}
+	else
+	{
+		return false;
+	}
+	
 }
 
 template <typename T>
 inline constexpr bool isReadableInContainer()
 {
-	return
-		isWritable<typename T::value_type>() &&
-		std::is_unsigned<decltype(std::declval<T>().size())>::value &&
-		std::is_same<typename T::value_type*, decltype(std::declval<T>().data())>::value
-	;
+	if constexpr (Details::isContainer<T>())
+	{
+		return
+			isWritable<typename T::value_type>() &&
+			std::is_unsigned<decltype(std::declval<T>().size())>::value &&
+			std::is_same<typename T::value_type*, decltype(std::declval<T>().data())>::value
+		;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 template <typename T>
 inline constexpr bool isReadableContainer()
 {
-	return
-		isWritable<typename T::value_type>() &&
-		std::is_unsigned<decltype(std::declval<T>().size())>::value &&
-		std::is_same<typename T::value_type*, decltype(std::declval<T>().data())>::value
-	;
+	if constexpr (Details::isContainer<T>())
+	{
+		return
+			isWritable<typename T::value_type>() &&
+			std::is_unsigned<decltype(std::declval<T>().size())>::value &&
+			std::is_same<typename T::value_type*, decltype(std::declval<T>().data())>::value
+		;
+	}
+	else
+	{
+		return false;
+	}
+	
 }
 
 template <typename T>

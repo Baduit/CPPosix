@@ -73,11 +73,10 @@ void testIsWritableContainer()
 	assert(Cpposix::isWritableContainer<std::vector<int>>());
 	assert(!Cpposix::isWritableContainer<std::vector<double>>());
 
-	// theses lines does not compile on purpose
-	//assert(!Cpposix::isWritableContainer<int>());
-	//assert(!Cpposix::isWritableContainer<packed>());
-	//assert(!Cpposix::isWritableContainer<std::list<int>>());
-	//assert(!Cpposix::isWritableContainer<int*>());
+	assert(!Cpposix::isWritableContainer<int>());
+	assert(!Cpposix::isWritableContainer<packed>());
+	assert(!Cpposix::isWritableContainer<std::list<int>>());
+	assert(!Cpposix::isWritableContainer<int*>());
 
 	assert(my_other_function("hey"s) == OverloadUsed::WRITABLE_CONTAINER);
 }
@@ -98,8 +97,7 @@ void test_choose_function()
 {
 	assert(choose_good_function(5) == OverloadUsed::WRITABLE);
 	assert(choose_good_function(""s) == OverloadUsed::WRITABLE_CONTAINER);
-	// does not compile on purpose
-	//assert(choose_good_function(std::list {50, 25}) == OverloadUsed::NONE);
+	assert(choose_good_function(std::list {50, 25}) == OverloadUsed::NONE);
 	assert(choose_good_function(NoneCompile()) == OverloadUsed::NONE);
 }
 
