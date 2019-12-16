@@ -1,4 +1,7 @@
 [![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fbaduit%2FCPPosix%2Fbadge%3Fref%3Dmaster&style=flat)](https://actions-badge.atrox.dev/baduit/CPPosix/goto?ref=master)
+
+This branch does not have any new feature and poorly supported for now, I keep it because I will break compatibility with C++17 in the next updates.
+
 # CPPosix
 A modern C++ header-only library which encapsulate the C Posix library but with modern c++ features.
 
