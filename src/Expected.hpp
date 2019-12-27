@@ -29,6 +29,8 @@ inline void check_string_view_null_terminated(std::string_view str)
 	#ifndef CPPOSIX_MACRO_DISABLE_CHECK_STRING_VIEW_NULL_TERMINATED
 		if (str[str.size()])
 			throw CpposixException("The string argument is not null terminated");
+	#else
+		static_cast<void>(str);
 	#endif
 }
 
