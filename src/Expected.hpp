@@ -13,6 +13,8 @@
 namespace Cpposix
 {
 
+struct Void {};	
+
 class CpposixException: public std::exception
 {
 	public:

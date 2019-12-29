@@ -20,7 +20,7 @@ using namespace std::string_literals;
 
 void test_write()
 {
-	Fd wrong_fd(-4);
+	/* Fd wrong_fd(-4);
 	assert(!wrong_fd);
 	assert(!wrong_fd.write(5));
 
@@ -37,12 +37,12 @@ void test_write()
 
 	assert(fd.write("\n", 1).getOr(0) == 1);
 
-	assert((fd << "Operator <<\n"s));
+	assert((fd << "Operator <<\n"s)); */
 }
 
 void test_readIn()
 {
-	FileFd fd("Makefile", O_RDONLY);
+/* 	FileFd fd("Makefile", O_RDONLY);
 
 	assert(fd);
 
@@ -54,30 +54,30 @@ void test_readIn()
 	assert(fd.readIn(v, 5).getOr(0) == 5);
 	assert(fd.readIn(v.data(), 5).getOr(0) == 5);
 	assert((fd >> v));
-	assert(!fd.readIn(v, 25));
+	assert(!fd.readIn(v, 25)); */
 }
 
 void test_read()
 {
-	FileFd fd("Makefile", O_RDONLY);
+/* 	FileFd fd("Makefile", O_RDONLY);
 
 	assert(fd);
 	assert(fd.read<uint32_t>());
-	assert(fd.read<std::string>(50));
+	assert(fd.read<std::string>(50)); */
 }
 
 void test_readExact()
 {
-	FileFd fd("Makefile", O_RDONLY);
+/* 	FileFd fd("Makefile", O_RDONLY);
 
 	assert(fd);
 	assert(fd.readExact<uint32_t>());
-	assert(fd.readExact<std::string>(50));
+	assert(fd.readExact<std::string>(50)); */
 }
 
 void test_pipe()
 {
-	Pipe p;
+/* 	Pipe p;
 	assert(p);
 
 	assert(p.write(static_cast<std::byte>('A')) == 1);
@@ -86,12 +86,12 @@ void test_pipe()
 	assert(c == 'A');
 
 	assert(p.write(static_cast<std::byte>('C')) == 1);
-	assert(p.read<uint8_t>().getOr('B') == 'C');
+	assert(p.read<uint8_t>().getOr('B') == 'C'); */
 }
 
 void test_dup()
 {
-	FileFd dev_null("/dev/null");
+/* 	FileFd dev_null("/dev/null");
 	Fd standard_output(1);
 	assert(dev_null);
 	{
@@ -99,12 +99,12 @@ void test_dup()
 		RedirectFd redirection(standard_output, dev_null);
 		standard_output.write(std::string("ERROR\n"));
 	}
-	standard_output.write(std::string("Success\n"));
+	standard_output.write(std::string("Success\n")); */
 }
 
 void test_select()
 {
-	{
+/* 	{
 		FileFd fd("Makefile", O_RDONLY);
 		FdEvent fd_event { { fd }, {}, {} };
 
@@ -119,7 +119,7 @@ void test_select()
 		std::cout << "Wait 1s begin, it will be shorter you write in the command line" << std::endl;
 		auto result = fdSelect(fd_event, std::chrono::seconds(1));
 		std::cout << "Wait 1s end" << std::endl;
-	}
+	} */
 }
 
 int main()

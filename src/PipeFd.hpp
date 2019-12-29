@@ -7,6 +7,7 @@
 namespace Cpposix
 {
 
+// Pipe FD seems totally useless
 class PipeFd: public Fd
 {
 	public:
@@ -28,7 +29,7 @@ class Pipe
 		operator bool() const { return _reader && _writer; }
 
 		// big forwarding
-		template <typename ...Args>
+		/* template <typename ...Args>
 		auto	write(Args&&... args) { return _writer.write(args...); }
 		
 		template <typename ...Args>
@@ -47,7 +48,7 @@ class Pipe
 		Expected<T>	readExact() { return _reader.readExact<T>(); }
 
 		template <typename T>
-		Expected<T>	readExact(std::size_t size) { _reader.readExact<T>(size); }
+		Expected<T>	readExact(std::size_t size) { _reader.readExact<T>(size); } */
 
 		PipeFd&	getReaderFd() { return _reader; }
 		const PipeFd&	getReaderFd() const { return _reader; }
