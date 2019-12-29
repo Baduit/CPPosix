@@ -18,7 +18,10 @@ namespace Cpposix
 {
 
 template <typename T>
-concept UniqueObjectRepresentation = std::has_unique_object_representations_v<T> && !std::ranges::contiguous_range<T>;
+concept UniqueObjectRepresentation =
+	std::has_unique_object_representations_v<T> &&
+	!std::ranges::contiguous_range<T> &&
+	!std::is_pointer_v<T>;
 
 struct FdFlags
 {
