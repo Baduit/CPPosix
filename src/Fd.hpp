@@ -110,15 +110,28 @@ class Fd
 				return Error();
 		}
 
+		/* Stream Operator overload */
+		template <typename T>
+		Fd& operator<<(const T& t)
+		{
+			write(t);
+			return *this;
+		}
+
 		/* Write */
 		template <typename T>
 		Expected<std::size_t>	write(const T* ptr, std::size_t size)
 		{
-			auto nb_byte_writed = ::write(_fd, ptr, size);
-			if (nb_byte_writed != -1)
-				return static_cast<std::size_t>(nb_byte_writed);
+			if (*this)
+			{
+				auto nb_byte_writed = ::write(_fd, ptr, size);
+				if (nb_byte_writed != -1)
+					return static_cast<std::size_t>(nb_byte_writed);
+				else
+					return Error();
+			}
 			else
-				return Error();
+				return Error(EBADF);
 		}
 
 		template <UniqueObjectRepresentation T>
@@ -132,10 +145,10 @@ class Fd
 		{
 			auto ptr = std::ranges::data(contiguous_range);
 			auto size = std::ranges::size(contiguous_range);
-			return write(ptr, ptr, size);
+			return write(ptr, size);
 		}
 
-		/* Read in */
+		/* Read */
 		template <typename T>
 		Expected<std::size_t>	read(T* ptr, std::size_t size)
 		{
@@ -149,6 +162,20 @@ class Fd
 			}
 			else
 				return Error(EBADF);
+		}
+
+		template <UniqueObjectRepresentation T>
+		Expected<std::size_t>	read(T& t)
+		{
+			return read(&t, sizeof(t));
+		}
+
+		template <std::ranges::contiguous_range ContiguousRange>
+		Expected<std::size_t>	read(ContiguousRange& contiguous_range)
+		{
+			auto ptr = std::ranges::data(contiguous_range);
+			auto size = std::ranges::size(contiguous_range);
+			return read(ptr, size);
 		}
 
 

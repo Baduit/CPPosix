@@ -20,7 +20,7 @@ using namespace std::string_literals;
 
 void test_write()
 {
-	/* Fd wrong_fd(-4);
+	Fd wrong_fd(-4);
 	assert(!wrong_fd);
 	assert(!wrong_fd.write(5));
 
@@ -30,31 +30,28 @@ void test_write()
 
 	std::string str = "\nContainer";
 	assert(fd.write(str).getOr(0) == str.size());
-	assert(fd.write(str, 50).getOr(0) == 0);
-
-	std::string str2 = "\nContainerblabla";
-	assert(fd.write(str2, str.size()).getOr(0) == str.size());
 
 	assert(fd.write("\n", 1).getOr(0) == 1);
 
-	assert((fd << "Operator <<\n"s)); */
+	assert((fd << 'O'));
+	assert((fd << "perator <<\n"s));
 }
 
 void test_readIn()
 {
-/* 	FileFd fd("Makefile", O_RDONLY);
+	FileFd fd("Makefile", O_RDONLY);
 
 	assert(fd);
 
 	int32_t i;
-	assert(fd.readIn(i).getOr(0) == sizeof(int32_t));
+	assert(fd.read(i).getOr(0) == sizeof(int32_t));
 
 	std::vector<uint8_t> v(10);
-	assert(fd.readIn(v).getOr(0) == 10);
-	assert(fd.readIn(v, 5).getOr(0) == 5);
-	assert(fd.readIn(v.data(), 5).getOr(0) == 5);
-	assert((fd >> v));
-	assert(!fd.readIn(v, 25)); */
+	assert(fd.read(v).getOr(0) == 10);
+	
+	for (uint8_t c: v)
+		std::cout << c;
+	std::cout << std::endl;
 }
 
 void test_read()
