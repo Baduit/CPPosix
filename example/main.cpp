@@ -32,14 +32,14 @@ int main(int argc, char **argv)
 	std::size_t file_size = static_cast<std::size_t>(stat_result->st_size);
 
 	// Lire le fichier en une fois pour avoir un seul appel systeme
-	auto conf_file_content = conf_file.readExact<std::string>(file_size);
-	if (!conf_file_content)
+	std::string conf_file_content;
+	conf_file_content.resize(file_size);
+	if (conf_file.read(conf_file_content).getOr(0) != file_size)
 		throw std::runtime_error("Error while reading the conf file");
-
 
 	std::vector<std::string> process_to_execute;
 	// Parcourir un dossier
-	for (const auto& filename: Cpposix::DirFd(*conf_file_content))
+	for (const auto& filename: Cpposix::DirFd(conf_file_content))
 	{
 		// Utiliser stat pour filtrer seulement des fichiers "normaux" et via le nom du fichier
 		auto file_stat_result = Cpposix::stat(filename);
@@ -55,7 +55,8 @@ int main(int argc, char **argv)
 			[&](Cpposix::Pipe& com)
 			{
 				std::cout << "Waiting main process to start execution." << std::endl;
-				com.read<uint8_t>();
+				uint8_t my_u8;
+				com.read(my_u8);
 				std::cout << "****************************************" << std::endl;
 				std::cout << "Test: " << process_name << " is begining" << std::endl;
 				std::cout << "****************************************" << std::endl;
