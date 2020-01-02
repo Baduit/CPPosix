@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0) # update this please
+cmake_minimum_required(VERSION 3.13) # check if maybe I can use a version a bit older
 
 project(CPPosix)
 add_definitions(-Wextra -Wall -Wsign-conversion -Wfloat-equal -pedantic -Wredundant-decls -Wshadow -Wpointer-arith -fconcepts) 
