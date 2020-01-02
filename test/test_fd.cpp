@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cstdint>
 #include <string>
+#include <string_view>
 #include <vector>
 #include <list>
 #include <sys/types.h>
@@ -17,6 +18,7 @@
 
 using namespace Cpposix;
 using namespace std::string_literals;
+using namespace std::string_view_literals;
 
 void test_write()
 {
@@ -37,7 +39,7 @@ void test_write()
 	assert((fd << "perator <<\n"s));
 }
 
-void test_readIn()
+void test_read()
 {
 	FileFd fd("Makefile", O_RDONLY);
 
@@ -54,15 +56,6 @@ void test_readIn()
 	std::cout << std::endl;
 }
 
-void test_read()
-{
-/* 	FileFd fd("Makefile", O_RDONLY);
-
-	assert(fd);
-	assert(fd.read<uint32_t>());
-	assert(fd.read<std::string>(50)); */
-}
-
 void test_readExact()
 {
 /* 	FileFd fd("Makefile", O_RDONLY);
@@ -74,21 +67,28 @@ void test_readExact()
 
 void test_pipe()
 {
-/* 	Pipe p;
+	Pipe p;
 	assert(p);
 
-	assert(p.write(static_cast<std::byte>('A')) == 1);
+	assert(p.write(static_cast<std::byte>('A')));
 	char c;
-	assert(p.readIn(c) == 1);
+	assert(p.read(c) == 1);
 	assert(c == 'A');
 
-	assert(p.write(static_cast<std::byte>('C')) == 1);
-	assert(p.read<uint8_t>().getOr('B') == 'C'); */
+	auto input = "salut les amis"sv;
+	auto res = p.write(input);
+	assert(res);
+	assert(*res == input.size());
+
+	std::string output;
+	output.resize(input.size());
+	assert(p.read(output).getOr(0) == input.size());
+	assert(input == output);
 }
 
 void test_dup()
 {
-/* 	FileFd dev_null("/dev/null");
+	FileFd dev_null("/dev/null");
 	Fd standard_output(1);
 	assert(dev_null);
 	{
@@ -96,12 +96,12 @@ void test_dup()
 		RedirectFd redirection(standard_output, dev_null);
 		standard_output.write(std::string("ERROR\n"));
 	}
-	standard_output.write(std::string("Success\n")); */
+	standard_output.write(std::string("Success\n"));
 }
 
 void test_select()
 {
-/* 	{
+	{
 		FileFd fd("Makefile", O_RDONLY);
 		FdEvent fd_event { { fd }, {}, {} };
 
@@ -116,13 +116,12 @@ void test_select()
 		std::cout << "Wait 1s begin, it will be shorter you write in the command line" << std::endl;
 		auto result = fdSelect(fd_event, std::chrono::seconds(1));
 		std::cout << "Wait 1s end" << std::endl;
-	} */
+	}
 }
 
 int main()
 {
 	test_write();
-	test_readIn();
 	test_read();
 	test_readExact();
 	test_pipe();

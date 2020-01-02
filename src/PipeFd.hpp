@@ -29,26 +29,41 @@ class Pipe
 		operator bool() const { return _reader && _writer; }
 
 		// big forwarding
-		/* template <typename ...Args>
-		auto	write(Args&&... args) { return _writer.write(args...); }
-		
-		template <typename ...Args>
-		auto	read(Args&&... args) { return _reader.read(args...); }
+		template <typename T>
+		Expected<std::size_t>	write(const T* ptr, std::size_t size)
+		{
+			return _writer.write(ptr, size);
+		}
+
+		template <UniqueObjectRepresentation T>
+		Expected<std::size_t>	write(const T& t)
+		{
+			return _writer.write(t);
+		}
+
+		template <std::ranges::contiguous_range ContiguousRange>
+		Expected<std::size_t>	write(const ContiguousRange& contiguous_range)
+		{
+			return _writer.write(contiguous_range);
+		}
 
 		template <typename T>
-		Expected<T>	read() { return _reader.read<T>(); }
+		Expected<std::size_t>	read(T* ptr, std::size_t size)
+		{
+			return _reader.read(ptr, size);
+		}
 
-		template <typename T>
-		Expected<T>	read(std::size_t size) { _reader.read<T>(size); }
-		
-		template <typename ...Args>
-		auto	readIn(Args&&... args) { return _reader.readIn(args...); }
+		template <UniqueObjectRepresentation T>
+		Expected<std::size_t>	read(T& t)
+		{
+			return _reader.read(t);
+		}
 
-		template <typename T>
-		Expected<T>	readExact() { return _reader.readExact<T>(); }
-
-		template <typename T>
-		Expected<T>	readExact(std::size_t size) { _reader.readExact<T>(size); } */
+		template <std::ranges::contiguous_range ContiguousRange>
+		Expected<std::size_t>	read(ContiguousRange& contiguous_range)
+		{
+			return _reader.read(contiguous_range);
+		}
 
 		PipeFd&	getReaderFd() { return _reader; }
 		const PipeFd&	getReaderFd() const { return _reader; }
