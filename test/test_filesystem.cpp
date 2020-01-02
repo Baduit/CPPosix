@@ -42,11 +42,14 @@ int main()
 	assert(symlink("test/renamed.txt"sv, "test/symlink.txt"sv));
 	{
 		FileFd fd("test/renamed.txt"sv);
-		assert(fd.writeContainer("Hi"sv));
+		assert(fd.write("Hi"sv));
 	}
 	{
 		FileFd fd("test/renamed.txt"sv);
-		assert(fd.read<std::string>(2).get() == "Hi");
+		std::string buffer;
+		buffer.resize(2);
+		assert(fd.read<std::string>(buffer).getOr(0) == 2);
+		assert(buffer == "Hi");
 	}
 
 	assert(unlink("test/symlink.txt"sv));

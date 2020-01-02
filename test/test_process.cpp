@@ -77,9 +77,9 @@ void test_child_process()
 		auto cb =
 			[](Pipe& com)
 			{
-				auto a = com.read<uint8_t>();
-				assert(a);
-				assert(*a == 5);
+				uint8_t a = 0;
+				assert(com.read(a));
+				assert(a == 5);
 				auto nb = com.write(static_cast<uint16_t>(15));
 				assert(nb);
 				assert(*nb == sizeof(uint16_t));
@@ -89,9 +89,9 @@ void test_child_process()
 		ChildProcess p(cb, com);
 		com.write(static_cast<uint8_t>(5));
 		std::this_thread::sleep_for(std::chrono::milliseconds(200));
-		auto b = com.read<uint16_t>();
-		assert(b);
-		assert(*b == 15);
+		uint16_t b = 0;
+		assert(com.read(b).getOr(0) == 2);
+		assert(b == 15);
 		p.wait();
 	}
 }

@@ -12,23 +12,23 @@ include_directories(CPPosix PRIVATE ./src)
 # Tests
 enable_testing()
 
-#add_executable(expected.test test/test_expected.cpp)
-#add_test(test_expected expected.test)
+add_executable(expected.test test/test_expected.cpp)
+add_test(test_expected expected.test)
 
 add_executable(fd.test test/test_fd.cpp)
 add_test(test_fd fd.test)
 
-#add_executable(env.test test/test_env.cpp)
-#add_test(test_env env.test)
+add_executable(env.test test/test_env.cpp)
+add_test(test_env env.test)
 
-#add_executable(filesystem.test test/test_filesystem.cpp)
-#add_test(test_filesystem filesystem.test)
+add_executable(filesystem.test test/test_filesystem.cpp)
+add_test(test_filesystem filesystem.test)
 
-#add_executable(process.test test/test_process.cpp)
-#add_test(test_process process.test)
+add_executable(process.test test/test_process.cpp)
+add_test(test_process process.test)
 
-#add_executable(test_check_string_disable_macro.test test/test_check_string_disable_macro.cpp)
-#add_test(test_check_string_disable_macro test_check_string_disable_macro.test)
+add_executable(test_check_string_disable_macro.test test/test_check_string_disable_macro.cpp)
+add_test(test_check_string_disable_macro test_check_string_disable_macro.test)
 
 #set(SRC_EXAMPLE example/main.cpp)
 #add_executable(example.test ${SRC_EXAMPLE})
